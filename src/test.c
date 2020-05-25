@@ -24,9 +24,9 @@ void test1() {
 }
 
 void test2() {
-    int64_t seed = 1;
-    int X = 2304;
-    int Z = 632576;
+    int64_t seed = 8452694776535111286;
+    int X = 793856;
+    int Z = 87040;
     initBiomes();
     LayerStack g = setupGeneratorMC17();
     int *map = allocCache(&g.layers[g.layerNum - 1], 256, 256);
@@ -37,7 +37,7 @@ void test2() {
             for (int x = 0; x < 16; ++x) {
                 for (int z = 0; z < 16; ++z) {
                     if (map[aX * 4096 + aZ * 256 + x * 16 + z] == mushroomIsland || map[aX * 4096 + aZ * 256 + x * 16 + z] == mushroomIslandShore) {
-                        printf("%d,%d %d\n", 2304 + aX * 16 + x, 632576 + aZ * 16 + z, map[aX * 4096 + aZ * 256 + x * 16 + z]);
+                        printf("%d,%d %d\n", X + aX * 16 + x, Z + aZ * 16 + z, map[aX * 4096 + aZ * 256 + x * 16 + z]);
                     }
                 }
             }
@@ -46,7 +46,7 @@ void test2() {
 }
 
 int main() {
-    test1();
+    test2();
 
 
 }

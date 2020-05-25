@@ -115,8 +115,8 @@ int main(int argc, char *argv[]) {
     printf("Using seed %ld and version %s\n", seed, versions[mcversion]);
     int *map = allocCache(&g.layers[g.layerNum - 1], 256, 256);
     applySeed(&g, seed);
-    for (int reg16x = 0; reg16x < searchRange; ++reg16x) {
-        for (int reg16z = 0; reg16z < searchRange; ++reg16z) {
+    for (int reg16x = -searchRange; reg16x < searchRange; ++reg16x) {
+        for (int reg16z = -searchRange; reg16z < searchRange; ++reg16z) {
             int hit=0;
             for (int chunkX = 0; chunkX < 16; ++chunkX) {
                 for (int chunkZ = 0; chunkZ < 16; ++chunkZ) {
