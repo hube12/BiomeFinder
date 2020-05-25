@@ -3,8 +3,8 @@
 #include <stdio.h>
 #include "gen/layers.h"
 #include "gen/generator.h"
-#define OFFSET 100 // adjust this one for how many per 16*16 chunks grid should be obtained (its 256-OFFSET)
-#define PROPORTION 0.6 //adjust the proportion of biome you want in the 256*256 grid, 0.6 means about 39322 blocks
+#define OFFSET 200 // adjust this one for how many per 16*16 chunks grid should be obtained (its 256-OFFSET)
+#define PROPORTION 0.4 //adjust the proportion of biome you want in the 256*256 grid, 0.6 means about 39322 blocks
 static unsigned int str2int(const char *str, int h) {
     return !str[h] ? 5381 : (str2int(str, h + 1) * 33) ^ (unsigned int) (str[h]);
 }
@@ -120,7 +120,7 @@ int main(int argc, char *argv[]) {
             int hit=0;
             for (int chunkX = 0; chunkX < 16; ++chunkX) {
                 for (int chunkZ = 0; chunkZ < 16; ++chunkZ) {
-                    setChunkSeed(&layerBiomeDummy, 256*reg16x+16*chunkX , 256*reg16z+16*chunkZ);
+                    setChunkSeed(&layerBiomeDummy, 256*reg16x+16*chunkX+8 , 256*reg16z+16*chunkZ+8);
                     if(mcNextInt(&layerBiomeDummy, 6) == 5) hit++;
                 }
             }
