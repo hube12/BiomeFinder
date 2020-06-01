@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "gen/layers.h"
 #include "gen/generator.h"
-#define OFFSET 200 // adjust this one for how many per 16*16 chunks grid should be obtained (its 256-OFFSET)
+#define OFFSET 250 // adjust this one for how many per 16*16 chunks grid should be obtained (its 256-OFFSET)
 #define PROPORTION 0.4 //adjust the proportion of biome you want in the 256*256 grid, 0.6 means about 39322 blocks
 static unsigned int str2int(const char *str, int h) {
     return !str[h] ? 5381 : (str2int(str, h + 1) * 33) ^ (unsigned int) (str[h]);
@@ -53,7 +53,7 @@ enum versions parse_version(char *s) {
 }
 
 void usage() {
-    printf("Usage is ./MushroomFinder [mcversion] [seed] [searchRange]? [filter]? \n"
+    printf("Usage is ./MushroomFinder [mcversion] [seed] [searchRange]? \n"
            "Valid [mcversion] are 1.7, 1.8, 1.9, 1.10, 1.11, 1.12, 1.13, 1.13.2, 1.14.\n"
            "Valid [searchRange] (optional) is in blocks, default is 150000 which correspond to -150000 to 150000 on both X and Z.\n");
     exit(EXIT_FAILURE);
@@ -103,7 +103,7 @@ int main(int argc, char *argv[]) {
     initBiomes();
 
     Layer layerBiomeDummy;
-    setupLayer(256, &layerBiomeDummy, NULL, 200, NULL);
+    setupLayer(256, &layerBiomeDummy, NULL, 5, NULL);
     setWorldSeed(&layerBiomeDummy, seed);
 
     LayerStack g;
@@ -112,20 +112,16 @@ int main(int argc, char *argv[]) {
     } else {
         g = setupGeneratorMC17();
     }
-    printf("Using seed %ld and version %s\n", seed, versions[mcversion]);
+    printf("Using seed %lld and version %s\n", seed, versions[mcversion]);
     int *map = allocCache(&g.layers[g.layerNum - 1], 256, 256);
     applySeed(&g, seed);
     for (int reg16x = -searchRange; reg16x < searchRange; ++reg16x) {
         for (int reg16z = -searchRange; reg16z < searchRange; ++reg16z) {
-            int hit=0;
-            for (int chunkX = 0; chunkX < 16; ++chunkX) {
-                for (int chunkZ = 0; chunkZ < 16; ++chunkZ) {
-                    setChunkSeed(&layerBiomeDummy, 256*reg16x+16*chunkX+8 , 256*reg16z+16*chunkZ+8);
-                    if(mcNextInt(&layerBiomeDummy, 6) == 5) hit++;
-                }
-            }
-            if (hit>256-OFFSET){
+            // check center of the reg
+            setChunkSeed(&layerBiomeDummy, 256*reg16x+16*8+8 , 256*reg16z+16*8+8);
+            if (mcNextInt(&layerBiomeDummy, 100) == 0){
                 int count=0;
+                //generate the whole reg
                 genArea(&g.layers[g.layerNum - 1], map, 256*reg16x, 256*reg16z, 256, 256);
                 for (int i = 0; i < 256*256; ++i) {
                     if (map[i]==mushroomIsland || map[i]==mushroomIslandShore){
